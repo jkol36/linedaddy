@@ -7,11 +7,27 @@
  */
 
 import React, { Component, useState, useEffect } from 'react';
-import { Platform, StyleSheet, Text, View, TextInput } from 'react-native';
+import { 
+  Platform, 
+  StyleSheet, 
+  Text, 
+  View, 
+  TextInput, 
+  SafeAreaView, 
+  FlatList,
+  TouchableOpacity
+ } from 'react-native';
 import auth, { firebase } from '@react-native-firebase/auth';
-import { Appbar, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { 
+  Appbar, 
+  DefaultTheme, 
+  Provider as PaperProvider, 
+  Card, 
+  Title } from 'react-native-paper';
 import { SearchBar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+
 
 
 // TODO(you): import any additional firebase services that you require for your app, e.g for auth:
@@ -46,6 +62,84 @@ const theme = {
     accent: 'yellow',
   },
 };
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    title: 'Soccer',
+    uri: 'https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
+    title: 'Basketball',
+    uri: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1534&q=80'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Baseball',
+    uri: 'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1496&q=80'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Tennis',
+    uri: 'https://images.unsplash.com/photo-1471295253337-3ceaaedca402?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1496&q=80'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Football',
+    uri: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Basketball',
+    uri: 'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Hockey',
+    uri: 'https://images.unsplash.com/photo-1515703407324-5f753afd8be8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Cricket',
+    uri: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'E-Sports',
+    uri: 'https://images.unsplash.com/photo-1548686304-89d188a80029?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+  {
+    id: '58694a0f-3da1-471f-bd96-145571e29d72',
+    title: 'Golf',
+    uri: 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60'
+  },
+
+];
+function Item({ title, uri }) {
+  return (
+    <TouchableOpacity>
+      <Card style={styles.card}> 
+      <Card.Cover source={{ uri }} />
+        <Card.Content>
+            <Title>{title}</Title>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
+  );
+}
+
+const formatData = (data, numColumns) => {
+  console.log('formatting data', data, numColumns)
+  const numberOfFullRows = Math.floor(data.length / numColumns);
+  let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
+  while(numberOfElementsLastRow !== numColumns && numberOfElementsLastRow  !== 0) {
+    data.push({key: `blank-${numberOfElementsLastRow}`, empty: true})
+    numberOfElementsLastRow = numberOfElementsLastRow + 1;
+  }
+  return data;
+}
+
+const numColumns = 1;
 
 export default function App() {
   // Set an initializing state whilst Firebase connects
@@ -86,7 +180,15 @@ export default function App() {
           <View style={styles.iconContainer}>
             <Icon name='filter' size={30} color={'#ddd'}/>
           </View>
-          
+
+          <SafeAreaView style={styles.container}>
+            <FlatList
+              data={formatData(DATA, numColumns)}
+              renderItem={({ item }) => <Item title={item.title} uri={item.uri} />}
+              keyExtractor={item => item.id}
+              numColumns={3}
+            />
+          </SafeAreaView>
       </PaperProvider>
     );
   }
@@ -110,6 +212,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    paddingRight: 20
+  },
+  card: {
+    paddingRight:20,
   },
   iconContainer: {
     borderBottomColor: '#ddd',
