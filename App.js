@@ -6,11 +6,13 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import React, { Component, useState, useEffect } from 'react';
+import { Platform, StyleSheet, Text, View, TextInput } from 'react-native';
+import auth, { firebase } from '@react-native-firebase/auth';
+import { Appbar, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { SearchBar } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-
-import firebase from '@react-native-firebase/app';
 
 // TODO(you): import any additional firebase services that you require for your app, e.g for auth:
 //    1) install the npm package: `yarn add @react-native-firebase/auth@alpha` - you do not need to
@@ -29,23 +31,77 @@ const firebaseCredentials = Platform.select({
   android: 'https://invertase.link/firebase-android',
 });
 
-type Props = {};
+async function register(email, password) {
+  try {
+    await auth().createUserWithEmailAndPassword(email, password);
+  } catch (e) {
+    console.error(e.message);
+  }
+}
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#8937f2',
+    accent: 'yellow',
+  },
+};
 
-export default class App extends Component<Props> {
-  render() {
+export default function App() {
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+  const [searchValue, changeSearchValue] = useState('')
+ 
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+ 
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+ 
+  if (initializing) return null;
+ 
+  if (!user) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native + Firebase!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-        {!firebase.apps.length && (
-          <Text style={styles.instructions}>
-            {`\nYou currently have no Firebase apps registered, this most likely means you've not downloaded your project credentials. Visit the link below to learn more. \n\n ${firebaseCredentials}`}
-          </Text>
-        )}
-      </View>
+      <PaperProvider theme={theme}>
+          <Appbar.Header style={styles.top}> 
+            <Text style={styles.headerText}> Sports</Text>
+            <Text style={styles.headerTextFaded}> Events</Text>
+            <Text style={styles.subHeadingPrimary}> 🔥Hot </Text>
+            <Text style={styles.subHeading}> 🔴Live </Text>
+            <Text style={styles.subHeading}> 🌎All </Text>
+          </Appbar.Header>
+          <SearchBar
+            placeholder='games, events, or teams'
+            containerStyle={styles.search}
+            inputContainerStyle={styles.innerSearchBar}
+            searchIcon
+            placeholderTextColor={'black'}
+          />
+          <View style={styles.iconContainer}>
+            <Icon name='filter' size={30} color={'#ddd'}/>
+          </View>
+          
+      </PaperProvider>
     );
   }
+ 
+  return (
+    <PaperProvider theme={theme}>
+          <Appbar.Header style={styles.top}> 
+            <Text style={styles.headerText}> Sports</Text>
+            <Text style={styles.headerTextFaded}> Events</Text>
+            <Text style={styles.subHeadingPrimary}> 🔥Hot </Text>
+            <Text style={styles.subHeading}> 🔴Live </Text>
+            <Text style={styles.subHeading}> 🌎All </Text>
+          </Appbar.Header>
+      </PaperProvider>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -54,6 +110,49 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  iconContainer: {
+    borderBottomColor: '#ddd',
+    marginLeft: 350,
+    marginTop: -40,
+    backgroundColor: '#fff',
+  },
+  headerText: {
+    color: 'white',
+    fontSize: 20,
+    paddingRight: 10
+  },
+  search: {
+    marginTop: 107,
+    width: '80%',
+    backgroundColor: 'white',
+  },
+  innerSearchBar: {
+    backgroundColor: 'white'
+  },
+  subHeading: {
+    marginTop: 75,
+    paddingLeft: 115,
+    paddingRight: 115,
+    marginLeft: -231.5,
+    color: 'grey'
+  },
+  subHeadingPrimary: {
+    marginTop: 75,
+    paddingLeft: 115,
+    paddingRight: 115,
+    marginLeft: -253.5,
+    color: 'white'
+  },
+  headerTextFaded: {
+    color: 'grey',
+    fontSize: 20
+  },
+  top: {
+    position: 'absolute',
+    height: 150,
+    width: 2000
+
   },
   welcome: {
     fontSize: 20,
