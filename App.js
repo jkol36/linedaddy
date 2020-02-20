@@ -37,23 +37,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 //    3) import the package here in your JavaScript code: `import '@react-native-firebase/auth';`
 //    4) The Firebase Auth service is now available to use here: `firebase.auth().currentUser`
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\nCmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\nShake or press menu button for dev menu',
-});
 
-const firebaseCredentials = Platform.select({
-  ios: 'https://invertase.link/firebase-ios',
-  android: 'https://invertase.link/firebase-android',
-});
-
-async function register(email, password) {
-  try {
-    await auth().createUserWithEmailAndPassword(email, password);
-  } catch (e) {
-    console.error(e.message);
-  }
-}
 const theme = {
   ...DefaultTheme,
   colors: {
@@ -62,7 +46,7 @@ const theme = {
     accent: 'yellow',
   },
 };
-const DATA = [
+const sports = [
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
     title: 'Soccer',
@@ -142,67 +126,36 @@ const formatData = (data, numColumns) => {
 const numColumns = 1;
 
 export default function App() {
-  // Set an initializing state whilst Firebase connects
-  const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-  const [searchValue, changeSearchValue] = useState('')
- 
-  // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
- 
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
- 
-  if (initializing) return null;
- 
-  if (!user) {
-    return (
-      <PaperProvider theme={theme}>
-          <Appbar.Header style={styles.top}> 
-            <Text style={styles.headerText}> Sports</Text>
-            <Text style={styles.headerTextFaded}> Events</Text>
-            <Text style={styles.subHeadingPrimary}> 🔥Hot </Text>
-            <Text style={styles.subHeading}> 🔴Live </Text>
-            <Text style={styles.subHeading}> 🌎All </Text>
-          </Appbar.Header>
-          <SearchBar
-            placeholder='games, events, or teams'
-            containerStyle={styles.search}
-            inputContainerStyle={styles.innerSearchBar}
-            searchIcon
-            placeholderTextColor={'black'}
-          />
-          <View style={styles.iconContainer}>
-            <Icon name='filter' size={30} color={'#ddd'}/>
-          </View>
-
-          <SafeAreaView style={styles.container}>
-            <FlatList
-              data={formatData(DATA, numColumns)}
-              renderItem={({ item }) => <Item title={item.title} uri={item.uri} />}
-              keyExtractor={item => item.id}
-              numColumns={3}
-            />
-          </SafeAreaView>
-      </PaperProvider>
-    );
-  }
  
   return (
     <PaperProvider theme={theme}>
-          <Appbar.Header style={styles.top}> 
-            <Text style={styles.headerText}> Sports</Text>
-            <Text style={styles.headerTextFaded}> Events</Text>
-            <Text style={styles.subHeadingPrimary}> 🔥Hot </Text>
-            <Text style={styles.subHeading}> 🔴Live </Text>
-            <Text style={styles.subHeading}> 🌎All </Text>
-          </Appbar.Header>
-      </PaperProvider>
+        <Appbar.Header style={styles.top}> 
+          <Text style={styles.headerText}> Sports</Text>
+          <Text style={styles.headerTextFaded}> Events</Text>
+          <Text style={styles.subHeadingPrimary}> 🔥Hot </Text>
+          <Text style={styles.subHeading}> 🔴Live </Text>
+          <Text style={styles.subHeading}> 🌎All </Text>
+        </Appbar.Header>
+        <SearchBar
+          placeholder='games, events, or teams'
+          containerStyle={styles.search}
+          inputContainerStyle={styles.innerSearchBar}
+          searchIcon
+          placeholderTextColor={'black'}
+        />
+        <View style={styles.iconContainer}>
+          <Icon name='filter' size={30} color={'#ddd'}/>
+        </View>
+
+        <SafeAreaView style={styles.container}>
+          <FlatList
+            data={formatData(sports, numColumns)}
+            renderItem={({ item }) => <Item title={item.title} uri={item.uri} />}
+            keyExtractor={item => item.id}
+            numColumns={3}
+          />
+        </SafeAreaView>
+    </PaperProvider>
   );
 }
 
