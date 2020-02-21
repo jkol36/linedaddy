@@ -47,7 +47,29 @@ export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      search: ''
+      search: '',
+      categories: [{
+        active: true,
+        name: 'Events'
+      },
+      {
+        active: false,
+        name: 'Sports'
+      }
+    ],
+    subCategories: [{
+      active: true,
+      name: '🔥Hot'
+    },{
+      active: false,
+      name: '🔴Live'
+    }, {
+      active: false,
+      name: '🌎All'
+    }]
+
+
+
     }
     this.updateSearch = this.updateSearch.bind(this);
   }
@@ -57,26 +79,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { search } = this.state
-    const categories = [{
-      active: true,
-      name: 'Events'
-    },
-    {
-      active: false,
-      name: 'Sports'
-    }
-  ]
-  const subCategories = [{
-    active: true,
-    name: '🔥Hot'
-  },{
-    active: false,
-    name: '🔴Live'
-  }, {
-    active: false,
-    name: '🌎All'
-  }]
+    const { search, categories, subCategories } = this.state
     return (
       <PaperProvider theme={theme}>
           <Appbar.Header style={styles.top}>
