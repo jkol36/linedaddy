@@ -114,7 +114,7 @@ export default class App extends React.Component {
             <Icon name='filter' size={40} color={'#ddd'}/>
           </Card>
   
-          <Sports />
+          <Events />
       </PaperProvider>
     );
   }
