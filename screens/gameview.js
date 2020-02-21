@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, Image, View, FlatList, StyleSheet, Text } from 'react-native';
+import { SafeAreaView, Image, View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-paper';
 
 const DATA = [
@@ -34,16 +34,18 @@ const DATA = [
 
 function Item({ homeTeam, time, date, awayTeam, homeTeamUri, awayTeamUri }) {
   return (
-    <Card style={styles.card}>
-      <Image source={{uri:homeTeamUri}} style={{height:30, width:30}}/>
-      <Text style={[styles.title, styles.teams]}>{homeTeam}</Text>
-      <Image source={{uri:awayTeamUri}} style={{height:30, width:30, paddingBottom:20}}/>
-      <Text style={[styles.title, styles.teams]}>{awayTeam}</Text>
-      <View style={{marginTop: -30}}>
-        <Text style={[styles.title, styles.time]}>{time}</Text>
-        <Text style={[styles.title, styles.date]}>{date}</Text>
-      </View>
-    </Card>
+    <TouchableOpacity>
+      <Card style={styles.card}>
+        <Image source={{uri:homeTeamUri}} style={{height:30, width:30}}/>
+        <Text style={[styles.title, styles.teams]}>{homeTeam}</Text>
+        <Image source={{uri:awayTeamUri}} style={{height:30, width:30, paddingBottom:20}}/>
+        <Text style={[styles.title, styles.teams]}>{awayTeam}</Text>
+        <View style={{marginTop: -30}}>
+          <Text style={[styles.title, styles.time]}>{time}</Text>
+          <Text style={[styles.title, styles.date]}>{date}</Text>
+        </View>
+      </Card>
+    </TouchableOpacity>
   );
 }
 
@@ -66,15 +68,18 @@ const styles = StyleSheet.create({
   },
   date: {
     marginLeft: 250,
-    fontSize: 10
+    fontSize: 10,
+    fontFamily: 'System'
   },
   teams: {
     marginLeft:100,
-    marginTop: -30
+    marginTop: -30,
+    fontFamily: 'System',
   },
   time: {
     marginLeft: 250,
     fontSize: 10,
+    fontFamily: 'System'
 
   },
   card: {

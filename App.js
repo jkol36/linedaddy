@@ -21,7 +21,7 @@ import auth, { firebase } from '@react-native-firebase/auth';
 import { 
   Appbar, 
   DefaultTheme, 
-  Provider as PaperProvider } from 'react-native-paper';
+  Provider as PaperProvider, Card } from 'react-native-paper';
 import { SearchBar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Sports from './screens/sports';
@@ -43,56 +43,94 @@ const theme = {
 
 
 
+export default class App extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      search: ''
+    }
+    this.updateSearch = this.updateSearch.bind(this);
+  }
 
+  updateSearch = search => {
+    this.setState({ search });
+  };
 
-export default function App() {
- 
-  return (
-    <PaperProvider theme={theme}>
-        <Appbar.Header style={styles.top}>
-          <TouchableOpacity>
-            <Text style={styles.headerTextFaded}> Sports</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.headerText}> Events</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.subHeadingPrimary}> 🔥Hot </Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.subHeading}> 🔴Live </Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.subHeading}> 🌎All </Text>
-          </TouchableOpacity>
-        </Appbar.Header>
-        <SearchBar
-          placeholder='games, events, or teams'
-          containerStyle={styles.search}
-          inputContainerStyle={styles.innerSearchBar}
-          searchIcon
-          placeholderTextColor={'black'}
-        />
-        <View style={styles.iconContainer}>
-          <Icon name='filter' size={30} color={'#ddd'}/>
-        </View>
-
-        <GameView />
-    </PaperProvider>
-  );
+  render() {
+    const { search } = this.state
+    const categories = [{
+      active: true,
+      name: 'Events'
+    },
+    {
+      active: false,
+      name: 'Sports'
+    }
+  ]
+  const subCategories = [{
+    active: true,
+    name: '🔥Hot'
+  },{
+    active: false,
+    name: '🔴Live'
+  }, {
+    active: false,
+    name: '🌎All'
+  }]
+    return (
+      <PaperProvider theme={theme}>
+          <Appbar.Header style={styles.top}>
+            {categories.map(category => {
+              return (
+                <TouchableOpacity>
+                  <Text style={category.active ? styles.headerText: styles.headerTextFaded}> {category.name}</Text>
+                </TouchableOpacity>
+              )
+            })}
+            {subCategories.map(category => {
+              return (
+                <TouchableOpacity>
+                  <Text style={category.active ? styles.subHeadingPrimary : styles.subHeading}> {category.name}</Text>
+                </TouchableOpacity>
+              )
+            })}
+          </Appbar.Header>
+          <SearchBar
+            placeholder='games, events, or teams'
+            containerStyle={styles.search}
+            onChangeText={this.updateSearch}
+            inputContainerStyle={styles.innerSearchBar}
+            searchIcon
+            placeholderTextColor={'black'}
+            value={search}
+          />
+          <Card style={styles.iconContainer}>
+            <Icon name='filter' size={40} color={'#ddd'}/>
+          </Card>
+  
+          <GameView />
+      </PaperProvider>
+    );
+  }
 }
+
 
 const styles = StyleSheet.create({
   iconContainer: {
     borderBottomColor: '#ddd',
     marginLeft: 350,
-    marginTop: -40,
+    marginTop: -55,
     backgroundColor: '#fff',
+    width: 50,
+    paddingTop: 10,
+    paddingBottom: 10
+
   },
   headerText: {
     color: 'white',
     fontSize: 20,
-    paddingRight: 10
+    paddingRight: 10,
+    fontFamily: 'System',
   },
   search: {
     marginTop: 107,
@@ -107,18 +145,21 @@ const styles = StyleSheet.create({
     paddingLeft: 115,
     paddingRight: 115,
     marginLeft: -231.5,
-    color: 'grey'
+    color: 'grey',
+    fontFamily: 'System'
   },
   subHeadingPrimary: {
     marginTop: 75,
     paddingLeft: 115,
     paddingRight: 115,
     marginLeft: -253.5,
-    color: 'white'
+    color: 'white',
+    fontFamily: 'System'
   },
   headerTextFaded: {
     color: 'grey',
-    fontSize: 20
+    fontSize: 20,
+    fontFamily: 'System'
   },
   top: {
     position: 'absolute',
@@ -126,14 +167,5 @@ const styles = StyleSheet.create({
     width: 2000
 
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+
 });
