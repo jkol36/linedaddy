@@ -42,12 +42,19 @@ const theme = {
 };
 
 
+const ContentTitle = ({ title, style }) => (
+  <Appbar.Content
+    title={<Text style={style}> {title} </Text>}
+    style={{ alignItems: 'center' }}
+  />
+);
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       search: '',
+      title: 'NFL Week 1',
       categories: [{
         active: true,
         name: 'Events'
@@ -82,22 +89,18 @@ export default class App extends React.Component {
     const { search, categories, subCategories } = this.state
     return (
       <PaperProvider theme={theme}>
-          <Appbar.Header style={styles.top}>
-            {categories.map(category => {
-              return (
-                <TouchableOpacity>
-                  <Text style={category.active ? styles.headerText: styles.headerTextFaded}> {category.name}</Text>
-                </TouchableOpacity>
-              )
-            })}
-            {subCategories.map(category => {
-              return (
-                <TouchableOpacity>
-                  <Text style={category.active ? styles.subHeadingPrimary : styles.subHeading}> {category.name}</Text>
-                </TouchableOpacity>
-              )
-            })}
-          </Appbar.Header>
+        <Appbar style={{elevation: 24, height:90}}>
+          <Appbar.Content
+            title={this.state.title}
+            subtitle={<React.Fragment>
+                <Text style={{color:'white', fontFamily:'System'}}> 🏈 Games</Text>
+                <Text> 🔴 Live </Text>
+            </React.Fragment>}
+            titleStyle={{marginTop:30}}
+            subtitleStyle={{marginRight: 150, width: 300}}
+          />
+        </Appbar>
+
           <SearchBar
             placeholder='games, events, or teams'
             containerStyle={styles.search}
@@ -111,7 +114,7 @@ export default class App extends React.Component {
             <Icon name='filter' size={40} color={'#ddd'}/>
           </Card>
   
-          <GameView />
+          <Sports />
       </PaperProvider>
     );
   }
@@ -136,7 +139,6 @@ const styles = StyleSheet.create({
     fontFamily: 'System',
   },
   search: {
-    marginTop: 107,
     width: '80%',
     backgroundColor: 'white',
   },
